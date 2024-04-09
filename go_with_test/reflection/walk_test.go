@@ -77,14 +77,14 @@ func TestWalk(t *testing.T) {
 			},
 			[]string{"London", "Reykjavík"},
 		},
-		{
-			"maps",
-			map[string]string{
-				"Cow":   "Moo",
-				"Sheep": "Baa",
-			},
-			[]string{"Moo", "Baa"},
-		},
+		// {
+		// 	"maps",
+		// 	map[string]string{
+		// 		"Cow":   "Moo",
+		// 		"Sheep": "Baa",
+		// 	},
+		// 	[]string{"Moo", "Baa"},
+		// },
 	}
 
 	for _, test := range cases {
@@ -98,6 +98,21 @@ func TestWalk(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("with maps", func(t *testing.T) {
+		aMap := map[string]string{
+			"Cow":   "Moo",
+			"Sheep": "Baa",
+		}
+
+		var got []string
+		walk(aMap, func(input string) {
+			got = append(got, input)
+		})
+
+		assertContains(t, got, "Moo")
+		assertContains(t, got, "Baa")
+	})
 	// expected := "Chris"
 	// var got []string
 
@@ -116,4 +131,17 @@ func TestWalk(t *testing.T) {
 	// if got[0] != expected {
 	// 	t.Errorf("got %q, want %q", got[0], expected)
 	// }
+}
+
+func assertContains(t testing.TB, haystack []string, needle string) {
+	t.Helper()
+	contains := false
+	for _, x := range haystack {
+		if x == needle {
+			contains = true
+		}
+	}
+	if !contains {
+		t.Errorf("expected %v to contain %q but it didn't", haystack, needle)
+	}
 }
