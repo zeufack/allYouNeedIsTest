@@ -7,6 +7,7 @@ import (
 
 type Store interface {
 	Fetch() string
+	Cancel()
 }
 
 type StubStore struct {
@@ -19,6 +20,7 @@ func (s *StubStore) Fetch() string {
 
 func Server(store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		store.Cancel()
 		fmt.Print(w, store.Fetch())
 	}
 }
