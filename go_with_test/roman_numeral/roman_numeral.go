@@ -54,3 +54,25 @@ func ConvertToRoman(arabic int) string {
 
 	return result.String()
 }
+
+func ConvertToArabic(roman string) int {
+	// if roman == "III" {
+	// 	return 3
+	// }
+	// if roman == "II" {
+	// 	return 2
+	// }
+	// total := 0
+	// for range roman {
+	// 	total++
+	// }
+
+	var arabic = 0
+	for _, numeral := range allRomanNumerals {
+		for strings.HasPrefix(roman, numeral.Symbol) {
+			arabic += numeral.Value
+			roman = strings.TrimPrefix(roman, numeral.Symbol)
+		}
+	}
+	return arabic
+}
