@@ -18,9 +18,16 @@ func (s StubFailingFs) Open(name string) (fs.File, error) {
 }
 
 func TestNewBlogPost(t *testing.T) {
+	const (
+		firstData = `Title: Post 1
+Description: this is first data`
+		secondData = `Title: Post 2
+Description: this is second data`
+	)
+
 	fs := fstest.MapFS{
-		"hello world.md":  {Data: []byte("Title: Post 1")},
-		"hello-world2.md": {Data: []byte("Title: Post 2")},
+		"hello world.md":  {Data: []byte(firstData)},
+		"hello-world2.md": {Data: []byte(secondData)},
 	}
 
 	posts, err := blogpost.NewPostFromFS(fs)
@@ -34,7 +41,7 @@ func TestNewBlogPost(t *testing.T) {
 	}
 
 	got := posts[0]
-	want := blogpost.Post{Title: "Post 1"}
+	want := blogpost.Post{Title: "Post 1", Description: "this is first data"}
 
 	// if !reflect.DeepEqual(got, want) {
 	// 	t.Errorf("got %v, want %v", got, want)
