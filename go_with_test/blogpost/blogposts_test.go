@@ -20,9 +20,18 @@ func (s StubFailingFs) Open(name string) (fs.File, error) {
 func TestNewBlogPost(t *testing.T) {
 	const (
 		firstData = `Title: Post 1
-Description: this is first data`
+Description: this is first data
+Tags: tdd, go
+---
+Hello
+World`
 		secondData = `Title: Post 2
-Description: this is second data`
+Description: this is second data
+Tags: rust, borrow-checker
+---
+B
+L
+M`
 	)
 
 	fs := fstest.MapFS{
@@ -41,7 +50,13 @@ Description: this is second data`
 	}
 
 	got := posts[0]
-	want := blogpost.Post{Title: "Post 1", Description: "this is first data"}
+	want := blogpost.Post{
+		Title:       "Post 1",
+		Description: "this is first data",
+		Tag:         []string{"tdd", "go"},
+		Body: `Hello
+World`,
+	}
 
 	// if !reflect.DeepEqual(got, want) {
 	// 	t.Errorf("got %v, want %v", got, want)
@@ -53,6 +68,6 @@ Description: this is second data`
 func assertPost(t *testing.T, want, got blogpost.Post) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %+v, want %+v", got, want)
+		t.Errorf("got %+v\n, want %+v\n", got, want)
 	}
 }
