@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"html/template"
 	"io"
 	"io/fs"
 	"strings"
@@ -89,4 +90,21 @@ func readBody(scanner *bufio.Scanner) string {
 		fmt.Fprintln(&buf, scanner.Text())
 	}
 	return strings.TrimSuffix(buf.String(), "\n")
+}
+
+const (
+	postTemplate = `<h1>{{.Title}}</h1><p>{{.Description}}</p>Tag: <ul>{{range .Tag}}<li>{{.}}</li>{{end}}</ul>`
+)
+
+func Render(buf io.Writer, aPost Post) error {
+
+	templ, err := template.New("blog").Parse(postTemplate)
+	if err != nil {
+		return err
+	}
+
+	if err := templ.Execute(buf, aPost); err != nil {
+		return err
+	}
+	return err
 }
